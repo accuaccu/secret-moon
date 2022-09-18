@@ -1,2 +1,2 @@
 # secret-moon
-Documentation, devlopment, and collaboration for secrect correlation analysis between temperature and electricity price.
+Documentation, development, and collaboration for secret correlation analysis between temperature and electricity price.
