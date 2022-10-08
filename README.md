@@ -12,7 +12,7 @@ Index number|Features|Like
 <td>
 Like me!
 
-[<a href="https://github.com/ariary/Readme-Like-Button/issues/new?assignees=&labels=like&template=like.yml&title=Add+new+like%21">👍</a>]
+
 
 <sub><b><i>Like counter: 12</i></b></sub>
 
