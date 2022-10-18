@@ -15,56 +15,19 @@ str_url_fmi <- 'http://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=get
 # https://urbandatapalette.com/post/2021-03-xml-dataframe-r/
 d <- read_xml(x = str_url_fmi)
 l <- as_list(d)
-df_l <- as_tibble(l) %>%
-  unnest_longer()
-?unnest_longer
-a <- xmlTreeParse(d)
+View(l)
 
-dt_n <- data.table(date_time = 
-                     c(
-                       l$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries[1]$point$MeasurementTVP$time,
-                       l$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries[2]$point$MeasurementTVP$time
-                     ),
-                   measure =
-                     c(
-                       l$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries[1]$point$MeasurementTVP$value,
-                       l$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries[2]$point$MeasurementTVP$value
-                     ))
-l$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries[2]$point$MeasurementTVP$time
+fun_get_values <- function(x,n) {
+  result <- matrix(NA, ncol = 2, nrow = n)
+  
+  for(i in 1:n) {
+    result[i,1] <- unlist(l$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries[i]$point$MeasurementTVP$time)
+    result[i,2] <- unlist(l$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries[i]$point$MeasurementTVP$value)
+  }
+  dt_result <- as.data.table(result)
+  setnames(dt_result, c('TIME_OF_MEASURE', 'VALUE_OF_MEASURE'))
+  #dt_result[, TIME_OF_MEASURE := as.Date(TIME_OF_MEASURE)]
+  return(dt_result)
+}
 
-
-unnest_longer(l)
-# Tuulen nopeus ja lampotila ajanhetkella jotain paikassa Raahe
-str_url <- 'http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::timevaluepair&place=Raahe&parameters=ws_10min,t2m&'
-d <- read_xml(x = str_url)
-a <- xmlTreeParse(d)
-
-l <- xml2::as_list(d)
-l$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries$point
-
-
-
-b <- a$doc$children$FeatureCollection
-
-v <- a$doc$children$FeatureCollection[[1]]
-
-
-u <- v[[1]]
-u[[5]]
-
-
-
-df_d_a$PointTimeSeriesObservation
-
-cat(df_d_a$PointTimeSeriesObservation)
-xmlto
-
-k <- xml2::read_xml(x = str_url)
-
-l <- xml2::as_list(k)
-l$FeatureCollection$member$PointTimeSeriesObservation$phenomenonTime$TimePeriod$beginPosition
-l$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries$point$MeasurementTVP$value
-xml2::xml_contents(k)
-
-xml_attr(k, attr = 'wml2:value')
-
+dt_data <- fun_get_values(l, 25)
