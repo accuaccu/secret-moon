@@ -1,12 +1,21 @@
 # Parse FMI windspeed-time data, single location
 fun_get_values <- function(x,n) {
   
+  require(data.table)
+  require(xml2)
+
+  # read xml from input url
+  #xml_tree <- read_xml(x)
+  #l_tree <- as_list(xml_tree)
+  
   result <- matrix(NA, ncol = 2, nrow = n)
   
   # Iterate over the measurement time-series
   for(i in 1:n) {
-    result[i,1] <- unlist(l$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries[i]$point$MeasurementTVP$time)
-    result[i,2] <- unlist(l$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries[i]$point$MeasurementTVP$value)
+    xml_tree <- read_xml(x)
+    l_tree <- as_list(xml_tree)
+    result[i,1] <- unlist(l_tree$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries[i]$point$MeasurementTVP$time)
+    result[i,2] <- unlist(l_tree$FeatureCollection$member$PointTimeSeriesObservation$result$MeasurementTimeseries[i]$point$MeasurementTVP$value)
   }
 
   # Convert into data.table and set column names
